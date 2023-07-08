@@ -1,0 +1,293 @@
+@use "../Abstract/functions" as func;
+@use "../Abstract/variables" as var;
+
+
+.form {
+  background-color: var(--todobox-color);
+  border-radius: 4px;
+  margin-bottom: func.rem(16);
+  transition: background-color .75s ease;
+
+  &__todo {
+    background-color: transparent;
+    background-image: 
+    radial-gradient(
+      func.fluid(18, 2.8vw, 24) circle at func.fluid(28, 3vw, 34) func.fluid(24, 3vw, 32),
+      var(--todobox-color) 50%,
+      transparent 51%
+    ),radial-gradient(
+      func.fluid(20, 3vw, 26) circle at func.fluid(28, 3vw, 34) func.fluid(24, 3vw, 32),
+      var(--color-three) 50%,
+      transparent 51%
+    );
+    border-radius: 4px;
+    color: var(--todotext-color);
+    height: func.fluid(48, 10vw, 64);
+    padding-left: func.fluid(52, 6vw, 72);
+    transition: color .75s ease;
+    width: 100%;
+  }
+}
+
+.todo {
+  $root: &;
+
+  &__container {
+    box-shadow: 0 0 1rem 10px var(--shadow);
+  }
+
+  &__items {
+    max-height: func.rem(320);
+    overflow: hidden auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1; 
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #888; 
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555; 
+    }
+  }
+
+  &__check {
+    height: func.rem(20);
+    left: func.rem(20);
+    opacity: 0;
+    position: absolute;
+    top: func.rem(16);
+    width: func.rem(20);
+
+    &:focus-visible {
+
+      + #{$root}__label {
+
+        &::before {
+          box-shadow: 0 0 1px 2px var(--todobox-color),
+                      0 0 1px 4px var(--color-outline);
+        }
+      }
+    }
+
+    &:checked {
+
+      ~ #{$root}__label {
+        color: var(--color-two);
+        text-decoration: line-through;
+
+        &::before {
+          animation: checked .3s ease-in-out forwards;
+        }
+
+        &::after {
+          opacity: 0;
+        }
+      }
+    }
+  }
+
+  &__item {
+    align-items: center;
+    background-color: var(--todobox-color);
+    border-bottom: 1px solid var(--color-three);
+    color: var(--todotext-color);
+    display: flex;
+    height: func.fluid(53, 5vw, 64);
+    justify-content: space-between;
+    padding: 0 func.fluid(20, 3vw, 24);
+    position: relative;
+    transition: transform .75s ease,
+                background-color .75s ease,
+                color .75s ease,
+                border-color .75s ease;
+
+    &:first-of-type {
+      border-radius: 4px 4px 0 0;
+    }
+
+    &.enter {
+      transform: translateX(3%);
+    }
+
+    &.drag {
+      opacity: 0.3;
+    }
+  }
+
+  &__label {
+    padding-left: func.fluid(32, 4vw, 48);
+    position: relative;
+    transition: color .75s ease;
+
+    &::before {
+      content:  url("../Images/icon-check.svg");
+      border-radius: 50%;
+      background: var.$check-bg;
+      display: grid;
+      height: func.fluid(20, 2vw, 24);
+      left: 0;
+      place-content: center;
+      position: absolute; 
+      transform: translateY(-50%);
+      transform-origin: center;
+      top: 50%;
+      width: func.fluid(20, 2vw, 24); 
+    }
+
+    &::after {
+      content: "";
+      background-color: var(--todobox-color);
+      border: 1px solid var(--color-three);
+      border-radius: 50%;
+      height: func.fluid(22, 2vw, 26);
+      left: -1px;
+      position: absolute;
+      transform: translateY(-50%);
+      transition: opacity .3s ease;
+      top: 50%;
+      transition: background-color .75s ease,
+                  border-color .75s ease;
+      width: func.fluid(22, 2vw, 26);
+    }
+  }
+
+  &__remove {
+    background: url("../Images/icon-cross.svg") no-repeat center center;
+    background-size: cover;
+    height: func.rem(13);
+    width: func.rem(13);
+  }
+
+  &__remaining {
+    align-items: center;
+    background-color: var(--todobox-color);
+    border-radius: 0 0 4px 4px;
+    color: var(--color-one);
+    display: flex;
+    height: func.rem(48);
+    justify-content: space-between;
+    margin-bottom: func.rem(16);
+    padding: 0 func.rem(20);
+    transition: background-color .75s ease,
+                color .75s ease;
+  }
+
+  &__options {
+    align-items: center;
+    border-radius: 4px;
+    background-color: var(--todobox-color);
+    box-shadow: 0 8px 1rem 10px var(--shadow);
+    color: var(--color-one);
+    display: flex;
+    font-size: func.rem(14);
+    font-weight: 700;
+    height: func.rem(48);
+    justify-content: center;
+    transition: background-color .75s ease,
+                color .75s ease;
+  }
+
+  &__option {
+    
+    &:first-of-type,
+    &:last-of-type {
+      display: none;
+    }
+
+    &:nth-of-type(3) {
+      margin: 0 func.rem(18);
+    }
+
+    button {
+      padding: 0;
+    }
+
+    &.selected {
+      color: var.$b-blue;
+    }
+  }
+
+  &__bottom-text {
+    color: var(--color-two);
+    font-size: func.rem(14);
+    margin-top: func.rem(40);
+    text-align: center;
+  }
+}
+
+@keyframes checked {
+  20% {
+    transform: scale(.9) translateY(-50%);
+  }
+  50% {
+    transform: scale(1.15) translateY(-50%);
+  }
+  75% {
+    transform: scale(.9) translateY(-50%);
+  }
+  100% {
+    transform: scale(1) translateY(-50%);
+  }
+}
+
+
+@media (min-width: 50em) {
+
+  .todo {
+
+    &__remaining {
+      display: none;
+    }
+
+    &__options {
+      border-radius: 0 0 4px 4px;
+      padding: 0 func.rem(24);
+    }
+
+    &__option {
+      transition: color .3s ease;
+      
+      &:first-of-type {
+        display: block;
+        font-weight: 400;
+        margin-right: auto;
+        width: func.rem(112);
+      }
+
+      &:last-of-type {
+        display: block;
+        font-weight: 400;
+        margin-left: auto;
+      }
+
+      &:hover {
+        color: var(--todotext-color);
+      }
+    }
+
+    &__label {
+      cursor: pointer;
+
+      &::after {
+        transition: border-color .3s ease,
+                    transform .3s ease;
+        transform-origin: center;
+      }
+      
+      &:hover {
+
+      &::after {
+        border-color: transparent;
+        transform: scale(.85) translateY(-58%);
+      }
+    }
+    }
+  }
+}
